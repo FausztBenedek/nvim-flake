@@ -26,7 +26,7 @@
             buildInputs = [ pkgs.makeWrapper ];
             paths = [ custom-nvim ];
             postBuild = ''
-              echo "Hello world"
+              wrapProgram $out/bin/nvim --set XDG_CONFIG_HOME "${./config}"
             '';
           });
         in
