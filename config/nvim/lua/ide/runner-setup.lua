@@ -1,7 +1,3 @@
-vim.pack.add({
-	{ src = "https://github.com/stevearc/overseer.nvim.git" },
-}, { confirm = false })
-
 -- https://github.com/stevearc/overseer.nvim.git
 require("overseer").setup({
 	strategy = {

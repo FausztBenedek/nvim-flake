@@ -1,25 +1,3 @@
--- Some blink.cmp specific logic that build this stuff immediatly after starting neovim
-local function build_blink(path)
-	vim.notify("Building blink.cmp with nix", vim.log.levels.INFO)
-	local obj = vim.system({ "nix", "run", ".#build-plugin" }, { cwd = path }):wait()
-	if obj.code == 0 then
-		vim.notify("Building blink.cmp done", vim.log.levels.INFO)
-	else
-		vim.notify("Building blink.cmp failed", vim.log.levels.ERROR)
-	end
-end
-vim.api.nvim_create_autocmd("PackChanged", {
-	callback = function(opts)
-		if opts and opts.data and opts.data.spec and opts.data.spec.name == "blink.cmp" then
-			build_blink(opts.data.path)
-		end
-	end,
-})
-
-vim.pack.add({
-	{ src = "https://github.com/neovim/nvim-lspconfig" },
-	{ src = "https://github.com/Saghen/blink.cmp" },
-}, { confirm = false })
 
 -- LSP keymaps
 
@@ -54,8 +32,8 @@ vim.lsp.enable("basedpyright")
 vim.lsp.enable("bashls")
 vim.lsp.enable("astro")
 vim.lsp.enable("ts_ls")
-vim.lsp.enable('nixd')
-vim.lsp.enable('terraformls')
+vim.lsp.enable("nixd")
+vim.lsp.enable("terraformls")
 vim.lsp.config("lua_ls", {
 	on_init = function(client)
 		if client.workspace_folders then
@@ -86,14 +64,14 @@ vim.lsp.config("lua_ls", {
 				checkThirdParty = false,
 				library = {
 					vim.env.VIMRUNTIME,
-          -- My own hack for hacking away with my config
+					-- My own hack for hacking away with my config
 					vim.fn.stdpath("data") .. "/site/pack/core/opt",
 				},
 				-- Or pull in all of 'runtimepath'.
 				-- NOTE: this is a lot slower and will cause issues when working on
 				-- your own configuration.
 				-- See https://github.com/neovim/nvim-lspconfig/issues/3189
-        -- library = vim.api.nvim_get_runtime_file('', true),
+				-- library = vim.api.nvim_get_runtime_file('', true),
 			},
 		})
 	end,

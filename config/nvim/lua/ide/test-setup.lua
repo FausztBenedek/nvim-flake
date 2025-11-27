@@ -1,12 +1,3 @@
-vim.pack.add({
-	{ src = "https://github.com/antoinemadec/FixCursorHold.nvim" },
-	{ src = "https://github.com/nvim-neotest/nvim-nio" },
-	{ src = "https://github.com/nvim-neotest/neotest" },
-	{ src = "https://github.com/nvim-neotest/neotest-python" },
-	-- Other dependencies that are installed elsewhere
-	-- { src = "https://github.com/nvim-treesitter/nvim-treesitter" },
-}, { confirm = false })
-
 require("neotest").setup({
 	consumers = {
 		overseer = require("neotest.consumers.overseer"),

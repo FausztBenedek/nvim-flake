@@ -36,10 +36,6 @@ vim.opt.swapfile = false
 vim.opt.cursorline = true
 vim.opt.clipboard:append("unnamedplus") -- use system clipboard as default register
 
------- THEME ------;
-vim.pack.add({ "https://github.com/catppuccin/nvim" }, { confirm = false })
-vim.cmd("colorscheme catppuccin-latte")
-
 ------ CORE KEYMAPS ------
 vim.keymap.set(
 	"n",
@@ -112,30 +108,77 @@ vim.keymap.set("n", "-", "/", { noremap = false, silent = true })
 vim.keymap.set("n", "<C-y>", ":<c-u>normal! <cr>", { noremap = false, silent = true }) -- <C-a> (the original increment) is mapped on the system level to enter the tiling windon manager mode
 
 ------ PLUGINS ------
-vim.pack.add({
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not (vim.uv or vim.loop).fs_stat(lazypath) then
+	vim.fn.system({
+		"git",
+		"clone",
+		"--filter=blob:none",
+		"https://github.com/folke/lazy.nvim.git",
+		"--branch=stable", -- latest stable release
+		lazypath,
+	})
+end
+vim.opt.rtp:prepend(lazypath)
+
+local opts = {}
+local plugins = {
+	-- Theme
+	{ "https://github.com/catppuccin/nvim" },
 	-- Plugins that are just added (no setup function needed)
-	{ src = "https://github.com/itchyny/vim-qfedit" },
-	{ src = "https://github.com/tpope/vim-surround" },
-	{ src = "https://github.com/folke/which-key.nvim" },
-	{ src = "https://github.com/tpope/vim-repeat" },
-	{ src = "https://github.com/famiu/bufdelete.nvim" },
-	{ src = "https://github.com/junegunn/vim-peekaboo" },
-	{ src = "https://github.com/nvim-lua/plenary.nvim" }, -- neotest and buffer_manager depend on this
-	{ src = "https://github.com/nvim-mini/mini.icons" }, -- oil.nvim depends on this
-	{ src = "https://github.com/nvim-tree/nvim-web-devicons" }, -- oil.nvim depends on this
-	{ src = "https://github.com/norcalli/nvim-colorizer.lua" },
+	{ "https://github.com/itchyny/vim-qfedit" },
+	{ "https://github.com/tpope/vim-surround" },
+	{ "https://github.com/folke/which-key.nvim" },
+	{ "https://github.com/tpope/vim-repeat" },
+	{ "https://github.com/famiu/bufdelete.nvim" },
+	{ "https://github.com/junegunn/vim-peekaboo" },
+	{ "https://github.com/nvim-lua/plenary.nvim" }, -- neotest and buffer_manager depend on this
+	{ "https://github.com/nvim-mini/mini.icons" }, -- oil.nvim depends on this
+	{ "https://github.com/nvim-tree/nvim-web-devicons" }, -- oil.nvim depends on this
+	{ "https://github.com/norcalli/nvim-colorizer.lua" },
 
 	-- Plugins needing configuration (at least a setup function)
-	{ src = "https://github.com/chiedo/vim-case-convert" },
-	{ src = "https://github.com/lukas-reineke/indent-blankline.nvim" },
-	{ src = "https://github.com/nvim-mini/mini.pick" },
-	{ src = "https://github.com/nvim-treesitter/nvim-treesitter", version = "main" },
-	{ src = "https://github.com/stevearc/oil.nvim" },
-	{ src = "https://github.com/windwp/nvim-autopairs" },
-	{ src = "https://github.com/justinmk/vim-sneak" },
-	{ src = "https://github.com/machakann/vim-highlightedyank" },
-	{ src = "https://github.com/j-morano/buffer_manager.nvim" },
-}, { confirm = false })
+	{ "https://github.com/chiedo/vim-case-convert" },
+	{ "https://github.com/lukas-reineke/indent-blankline.nvim" },
+	{ "https://github.com/nvim-mini/mini.pick" },
+	{ "https://github.com/nvim-treesitter/nvim-treesitter", branch = "main" },
+	{ "https://github.com/stevearc/oil.nvim" },
+	{ "https://github.com/windwp/nvim-autopairs" },
+	{ "https://github.com/justinmk/vim-sneak" },
+	{ "https://github.com/machakann/vim-highlightedyank" },
+	{ "https://github.com/j-morano/buffer_manager.nvim" },
+
+	--formatter-setup
+	{ "https://github.com/mhartington/formatter.nvim" },
+
+	-- git-setup
+	{ "https://github.com/tpope/vim-fugitive" },
+	{ "https://github.com/lewis6991/gitsigns.nvim" },
+
+	--lsp-setup
+	{ "https://github.com/neovim/nvim-lspconfig" },
+	{
+		-- Installed from nix, and the environment variable is also filled by the wrapper
+		name = "blink.cmp",
+		dir = vim.env.BLINK_CMP_PATH,
+	},
+
+	--runner-setup
+	{ "https://github.com/stevearc/overseer.nvim.git" },
+
+	--test-setup
+	{ "https://github.com/antoinemadec/FixCursorHold.nvim" },
+	{ "https://github.com/nvim-neotest/nvim-nio" },
+	{ "https://github.com/nvim-neotest/neotest" },
+	{ "https://github.com/nvim-neotest/neotest-python" },
+	-- Other dependencies that are installed elsewhere
+	-- { "https://github.com/nvim-treesitter/nvim-treesitter" },
+}
+
+require("lazy").setup(plugins, opts)
+
+------ THEME ------
+vim.cmd("colorscheme catppuccin-latte")
 
 -- https://github.com/chiedo/vim-case-convert
 vim.keymap.set("v", ",vc-", ":CamelToHyphen<CR>a", { noremap = false, silent = true, desc = "CamelToDash" })

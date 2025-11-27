@@ -3,7 +3,8 @@
   inputs = {
     flake-parts.url = "github:hercules-ci/flake-parts";
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
+    # neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
+    # It does not work within company firewalls, crates.io is not available
   };
 
   outputs = inputs@{ flake-parts, ... }:
@@ -18,7 +19,7 @@
         "x86_64-linux"
       ];
 
-      perSystem = { pkgs, system, ... }:
+      perSystem = { pkgs, ... }:
         let
           dependencies = with pkgs; [
             fzf
@@ -51,14 +52,18 @@
             vscode-langservers-extracted # HTML/CSS/JSON/ESLint language servers extracted from vscode
             tailwindcss-language-server
 
+            # Neovim plugins managed by Nix instead of Lazy.nvim
+            vimPlugins.blink-cmp
+
           ];
-          custom-nvim = inputs.neovim-nightly-overlay.packages.${system}.default;
           custom-nvim-wrapper = (pkgs.symlinkJoin {
             name = "Benedek-Neovim";
             buildInputs = [ pkgs.makeWrapper ];
-            paths = [ custom-nvim ] ++ dependencies;
+            paths = [ pkgs.neovim ] ++ dependencies;
             postBuild = ''
-              wrapProgram $out/bin/nvim --set XDG_CONFIG_HOME "${./config}"
+              wrapProgram $out/bin/nvim \
+                --set XDG_CONFIG_HOME "${./config}" \
+                --set BLINK_CMP_PATH "${pkgs.vimPlugins.blink-cmp}"
             '';
           });
         in
@@ -73,6 +78,13 @@
             type = "app";
             program = "${custom-nvim-wrapper}/bin/nvim";
           };
+
+          # Some configs that I took from my previous configuration that might be helpful later:
+          # home.sessionVariables = {
+          #   EDITOR = "nvim";
+          #   _NVIM_HELPER_LOCATION_OF_JAVA_JDTLS = pkgs.jdt-language-server;
+          #   _NVIM_HELPER_LOCATION_OF_LOMBOK = "${pkgs.lombok}/share/java/lombok.jar"; # Needed for jdt-language-server
+          # };
         };
     };
 }
