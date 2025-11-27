@@ -268,7 +268,15 @@ local treesitter_languages = {
 	"rust",
 	"nix",
 }
-require("nvim-treesitter").install(treesitter_languages)
+
+vim.opt.runtimepath:prepend(vim.env.TREESITTER_PARSERS)
+vim.g.ts_install = false
+require("nvim-treesitter").setup({
+	-- Directory to install parsers and queries to
+	install_dir = vim.env.TREESITTER_PARSERS,
+	highlight = { enable = true },
+	indent = { enable = true },
+})
 vim.api.nvim_create_autocmd("FileType", {
 	pattern = treesitter_languages,
 	callback = function()

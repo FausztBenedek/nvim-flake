@@ -21,6 +21,43 @@
 
       perSystem = { pkgs, ... }:
         let
+          tree-sitter-parsers = pkgs.symlinkJoin {
+            name = "ts-parsers";
+            paths = [
+              pkgs.vimPlugins.nvim-treesitter
+              pkgs.vimPlugins.nvim-treesitter-parsers.yaml
+              pkgs.vimPlugins.nvim-treesitter-parsers.json
+              pkgs.vimPlugins.nvim-treesitter-parsers.xml
+              pkgs.vimPlugins.nvim-treesitter-parsers.toml
+              pkgs.vimPlugins.nvim-treesitter-parsers.markdown
+              pkgs.vimPlugins.nvim-treesitter-parsers.markdown_inline
+
+              pkgs.vimPlugins.nvim-treesitter-parsers.bash
+              pkgs.vimPlugins.nvim-treesitter-parsers.dockerfile
+              pkgs.vimPlugins.nvim-treesitter-parsers.gitignore
+
+              pkgs.vimPlugins.nvim-treesitter-parsers.javascript
+              pkgs.vimPlugins.nvim-treesitter-parsers.typescript
+              pkgs.vimPlugins.nvim-treesitter-parsers.tsx
+              pkgs.vimPlugins.nvim-treesitter-parsers.css
+              pkgs.vimPlugins.nvim-treesitter-parsers.html
+              pkgs.vimPlugins.nvim-treesitter-parsers.scss
+              pkgs.vimPlugins.nvim-treesitter-parsers.svelte
+              pkgs.vimPlugins.nvim-treesitter-parsers.vue
+              pkgs.vimPlugins.nvim-treesitter-parsers.prisma
+              pkgs.vimPlugins.nvim-treesitter-parsers.astro
+
+              pkgs.vimPlugins.nvim-treesitter-parsers.lua
+              pkgs.vimPlugins.nvim-treesitter-parsers.vim
+              pkgs.vimPlugins.nvim-treesitter-parsers.query
+              pkgs.vimPlugins.nvim-treesitter-parsers.vimdoc
+
+              pkgs.vimPlugins.nvim-treesitter-parsers.python
+              pkgs.vimPlugins.nvim-treesitter-parsers.java
+              pkgs.vimPlugins.nvim-treesitter-parsers.rust
+              pkgs.vimPlugins.nvim-treesitter-parsers.nix
+            ];
+          };
           dependencies = with pkgs; [
             fzf
             tree-sitter
@@ -64,6 +101,7 @@
               wrapProgram $out/bin/nvim \
                 --set XDG_CONFIG_HOME "${./config}" \
                 --set BLINK_CMP_PATH "${pkgs.vimPlugins.blink-cmp}" \
+                --set TREESITTER_PARSERS "${tree-sitter-parsers}" \
                 --prefix PATH : "${pkgs.lib.makeBinPath dependencies}"
             '';
           });
