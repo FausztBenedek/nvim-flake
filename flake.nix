@@ -1,6 +1,5 @@
 {
-
-
+  description = "FausztBenedek's neovim config bundled";
   inputs = {
     flake-parts.url = "github:hercules-ci/flake-parts";
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -21,18 +20,26 @@
 
       perSystem = { pkgs, system, ... }:
         let
-            custom-nvim = inputs.neovim-nightly-overlay.packages.${system}.default;
+          custom-nvim = inputs.neovim-nightly-overlay.packages.${system}.default;
+          custom-nvim-wrapper = (pkgs.symlinkJoin {
+            name = "Benedek-Neovim";
+            buildInputs = [ pkgs.makeWrapper ];
+            paths = [ custom-nvim ];
+            postBuild = ''
+              echo "Hello world"
+            '';
+          });
         in
         {
           devShells.default = pkgs.mkShell {
-            packages = [ custom-nvim ];
+            packages = [ custom-nvim-wrapper ];
           };
 
-          packages.default = custom-nvim;
+          packages.default = custom-nvim-wrapper;
 
           apps.default = {
             type = "app";
-            program = "${custom-nvim}/bin/nvim";
+            program = "${custom-nvim-wrapper}/bin/nvim";
           };
         };
     };
