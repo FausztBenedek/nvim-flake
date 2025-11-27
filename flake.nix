@@ -59,11 +59,12 @@
           custom-nvim-wrapper = (pkgs.symlinkJoin {
             name = "Benedek-Neovim";
             buildInputs = [ pkgs.makeWrapper ];
-            paths = [ pkgs.neovim ] ++ dependencies;
+            paths = [ pkgs.neovim ];
             postBuild = ''
               wrapProgram $out/bin/nvim \
                 --set XDG_CONFIG_HOME "${./config}" \
-                --set BLINK_CMP_PATH "${pkgs.vimPlugins.blink-cmp}"
+                --set BLINK_CMP_PATH "${pkgs.vimPlugins.blink-cmp}" \
+                --prefix PATH : "${pkgs.lib.makeBinPath dependencies}"
             '';
           });
         in
