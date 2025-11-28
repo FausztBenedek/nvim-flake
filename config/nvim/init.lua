@@ -77,9 +77,9 @@ vim.keymap.set("t", "<C-j>", "<C-\\><C-n><C-w>j", { noremap = true, silent = tru
 vim.keymap.set("t", "<C-k>", "<C-\\><C-n><C-w>k", { noremap = true, silent = true })
 vim.keymap.set("t", "<C-l>", "<C-\\><C-n><C-w>l", { noremap = true, silent = true })
 
-vim.keymap.set("n", "<C-.>", "mJA;<esc>`J", { noremap = true, silent = true })
+vim.keymap.set("n", "<C-d>", "mJA;<esc>`J", { noremap = true, silent = true })
 vim.keymap.set("n", "<C-,>", "mJA,<esc>`J", { noremap = true, silent = true })
-vim.keymap.set("i", "<C-.>", "<esc>mJA;<esc>`J", { noremap = true, silent = true })
+vim.keymap.set("i", "<C-d>", "<esc>mJA;<esc>`J", { noremap = true, silent = true })
 vim.keymap.set("i", "<C-,>", "<esc>mJA,<esc>`J", { noremap = true, silent = true })
 
 vim.keymap.set(
