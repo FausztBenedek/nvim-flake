@@ -311,6 +311,13 @@ vim.keymap.set({ "n", "x", "o" }, "F", "<Plug>Sneak_F", { noremap = true, silent
 vim.keymap.set({ "n", "x", "o" }, "t", "<Plug>Sneak_t", { noremap = true, silent = true })
 vim.keymap.set({ "n", "x", "o" }, "T", "<Plug>Sneak_T", { noremap = true, silent = true })
 
+-- After lazy, sneak started map `s` even if I remapped it to disable, like the docs said. After setting and removing the issue is solved
+vim.keymap.set({ "n", "x", "o" }, "s", "<Plug>Sneak_s", { noremap = true, silent = true })
+vim.keymap.set({ "n", "x", "o" }, "S", "<Plug>Sneak_S", { noremap = true, silent = true })
+-- remove Sneak's default maps after load
+vim.keymap.del({ "n", "x", "o" }, "s")
+vim.keymap.del({ "n", "x", "o" }, "S")
+
 -- https://github.com/machakann/vim-highlightedyank
 vim.g.highlightedyank_highlight_duration = 300
 
