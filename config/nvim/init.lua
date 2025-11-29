@@ -124,7 +124,7 @@ vim.opt.rtp:prepend(lazypath)
 local opts = {}
 local plugins = {
 	-- Theme
-  { "https://github.com/Mofiqul/dracula.nvim" },
+	{ "https://github.com/Mofiqul/dracula.nvim" },
 	-- Plugins that are just added (no setup function needed)
 	{ "https://github.com/itchyny/vim-qfedit" },
 	{ "https://github.com/tpope/vim-surround" },
@@ -315,10 +315,10 @@ vim.keymap.set({ "n", "x", "o" }, "T", "<Plug>Sneak_T", { noremap = true, silent
 
 -- After lazy, sneak started map `s` even if I remapped it to disable, like the docs said. After setting and removing the issue is solved
 vim.keymap.set({ "n", "x", "o" }, "s", "<Plug>Sneak_s", { noremap = true, silent = true })
-vim.keymap.set({ "n", "x", "o" }, "S", "<Plug>Sneak_S", { noremap = true, silent = true })
+vim.keymap.set({ "n", "o" }, "S", "<Plug>Sneak_S", { noremap = true, silent = true })
 -- remove Sneak's default maps after load
 vim.keymap.del({ "n", "x", "o" }, "s")
-vim.keymap.del({ "n", "x", "o" }, "S")
+vim.keymap.del({ "n", "o" }, "S")
 
 -- https://github.com/machakann/vim-highlightedyank
 vim.g.highlightedyank_highlight_duration = 300
