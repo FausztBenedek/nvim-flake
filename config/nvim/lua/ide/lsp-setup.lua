@@ -62,16 +62,16 @@ vim.lsp.config("lua_ls", {
 			-- Make the server aware of Neovim runtime files
 			workspace = {
 				checkThirdParty = false,
-				library = {
-					vim.env.VIMRUNTIME,
-					-- My own hack for hacking away with my config
-					vim.fn.stdpath("data") .. "/site/pack/core/opt",
-				},
+				-- library = {
+				-- 	vim.env.VIMRUNTIME,
+				-- 	-- My own hack for hacking away with my config
+				-- 	vim.fn.stdpath("data") .. "/site/pack/core/opt",
+				-- },
 				-- Or pull in all of 'runtimepath'.
 				-- NOTE: this is a lot slower and will cause issues when working on
 				-- your own configuration.
 				-- See https://github.com/neovim/nvim-lspconfig/issues/3189
-				-- library = vim.api.nvim_get_runtime_file('', true),
+				library = vim.api.nvim_get_runtime_file('', true),
 			},
 		})
 	end,
