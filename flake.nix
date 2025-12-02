@@ -92,6 +92,10 @@
             # Neovim plugins managed by Nix instead of Lazy.nvim
             vimPlugins.blink-cmp
 
+            # Java dev dependencies
+            jdt-language-server
+            lombok
+
           ];
           custom-nvim-wrapper = (pkgs.symlinkJoin {
             name = "Benedek-Neovim";
@@ -102,6 +106,8 @@
                 --set XDG_CONFIG_HOME "${./config}" \
                 --set BLINK_CMP_PATH "${pkgs.vimPlugins.blink-cmp}" \
                 --set TREESITTER_PARSERS "${tree-sitter-parsers}" \
+                --set JAVA_JDTLS "${pkgs.jdt-language-server}" \
+                --set LOMBOK_JAR "${pkgs.lombok}/share/java/lombok.jar" \
                 --prefix PATH : "${pkgs.lib.makeBinPath dependencies}"
             '';
           });
@@ -117,13 +123,6 @@
             type = "app";
             program = "${custom-nvim-wrapper}/bin/nvim";
           };
-
-          # Some configs that I took from my previous configuration that might be helpful later:
-          # home.sessionVariables = {
-          #   EDITOR = "nvim";
-          #   _NVIM_HELPER_LOCATION_OF_JAVA_JDTLS = pkgs.jdt-language-server;
-          #   _NVIM_HELPER_LOCATION_OF_LOMBOK = "${pkgs.lombok}/share/java/lombok.jar"; # Needed for jdt-language-server
-          # };
         };
     };
 }

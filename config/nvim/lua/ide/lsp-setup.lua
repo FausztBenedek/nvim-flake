@@ -1,4 +1,3 @@
-
 -- LSP keymaps
 
 vim.keymap.set("n", "gd", vim.lsp.buf.definition, { desc = "Show LSP definitions" }) -- show lsp definitions
@@ -71,7 +70,7 @@ vim.lsp.config("lua_ls", {
 				-- NOTE: this is a lot slower and will cause issues when working on
 				-- your own configuration.
 				-- See https://github.com/neovim/nvim-lspconfig/issues/3189
-				library = vim.api.nvim_get_runtime_file('', true),
+				library = vim.api.nvim_get_runtime_file("", true),
 			},
 		})
 	end,
@@ -112,4 +111,15 @@ require("blink.cmp").setup({
 			force_version = "1.*",
 		},
 	},
+})
+
+-- java
+local jdtls_group = vim.api.nvim_create_augroup("JdtlsSetup", { clear = true })
+
+vim.api.nvim_create_autocmd("FileType", {
+	group = jdtls_group,
+	pattern = "java",
+	callback = function()
+		require("ide.jdtls-setup").setup({})
+	end,
 })
