@@ -12,6 +12,7 @@ local function copy_jdtls_config_to_writable_location()
 			.. (os_name == "Windows_NT" and "win" or os_name == "Linux" and "linux" or "mac")
 			.. "/."
 
+		print("Copying jdtls config from " .. original_config_path .. " to " .. new_config_path)
 		vim.fn.system({
 			"cp",
 			"-r",
