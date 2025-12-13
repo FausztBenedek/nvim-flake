@@ -171,6 +171,7 @@ local plugins = {
 	{ "https://github.com/nvim-neotest/nvim-nio" },
 	{ "https://github.com/nvim-neotest/neotest" },
 	{ "https://github.com/nvim-neotest/neotest-python" },
+	{ "https://github.com/rcasia/neotest-java" },
 
 	-- java setup
 	{ "mfussenegger/nvim-jdtls" },
