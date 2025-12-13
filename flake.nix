@@ -111,13 +111,34 @@
                 --prefix PATH : "${pkgs.lib.makeBinPath dependencies}"
             '';
           });
+          custom-nvim-dev-wrapper = (pkgs.symlinkJoin {
+            name = "Benedek-Neovim";
+            buildInputs = [ pkgs.makeWrapper ];
+            paths = [ pkgs.neovim ];
+            postBuild = ''
+              wrapProgram $out/bin/nvim \
+                --set XDG_CONFIG_HOME "/Users/benedekfauszt/.config/nvim-flake/config" \
+                --set BLINK_CMP_PATH "${pkgs.vimPlugins.blink-cmp}" \
+                --set TREESITTER_PARSERS "${tree-sitter-parsers}" \
+                --set JAVA_JDTLS "${pkgs.jdt-language-server}" \
+                --set LOMBOK_JAR "${pkgs.lombok}/share/java/lombok.jar" \
+                --prefix PATH : "${pkgs.lib.makeBinPath dependencies}"
+            '';
+          });
         in
         {
           devShells.default = pkgs.mkShell {
             packages = [ custom-nvim-wrapper ];
           };
 
+          # For tweaking the nvim configuration and receiving instant feedback
+          devShells.dev = pkgs.mkShell {
+            packages = [ custom-nvim-dev-wrapper ];
+          };
+
+
           packages.default = custom-nvim-wrapper;
+          packages.dev = custom-nvim-dev-wrapper;
 
           apps.default = {
             type = "app";
