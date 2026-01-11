@@ -101,6 +101,35 @@ vim.keymap.set(
 	{ noremap = true, silent = true, desc = ":set filetype=markdown" }
 )
 
+vim.keymap.set("n", "<leader>yp", function()
+	local raw
+
+	-- Prefer Oil dir when in an Oil buffer
+	local ok, oil = pcall(require, "oil")
+	if ok then
+		raw = oil.get_current_dir()
+	end
+
+	-- Fallback: current buffer full path (dir + filename)
+	if not raw then
+		local bufname = vim.api.nvim_buf_get_name(0)
+		if bufname ~= "" then
+			raw = vim.fn.fnamemodify(bufname, ":p") -- full path including filename
+		end
+	end
+
+	if not raw then
+		vim.notify("No path available", vim.log.levels.WARN)
+		return
+	end
+
+	-- Escape for shell usage (handles spaces, quotes, etc.)
+	local escaped = vim.fn.shellescape(raw)
+
+	vim.fn.setreg("+", escaped)
+	vim.notify("Copied: " .. escaped)
+end, { desc = "Copy current full path" })
+
 -- English keyboard similarity maps
 vim.api.nvim_set_keymap("n", "ú", "]", { noremap = false, silent = true }) -- must remain nvim_set_keymap, other does not work
 vim.api.nvim_set_keymap("n", "ő", "[", { noremap = false, silent = true })
