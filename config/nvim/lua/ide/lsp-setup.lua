@@ -33,6 +33,16 @@ vim.lsp.enable("astro")
 vim.lsp.enable("ts_ls")
 vim.lsp.enable("nixd")
 vim.lsp.enable("terraformls")
+vim.lsp.config('yamlls', {
+  settings = {
+    yaml = {
+      schemas = {
+        ["https://json.schemastore.org/github-workflow.json"] = "/.github/workflows/*",
+      },
+    },
+  }
+})
+vim.lsp.enable('yamlls')
 vim.lsp.config("lua_ls", {
 	on_init = function(client)
 		if client.workspace_folders then

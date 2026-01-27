@@ -88,6 +88,7 @@
             astro-language-server
             vscode-langservers-extracted # HTML/CSS/JSON/ESLint language servers extracted from vscode
             tailwindcss-language-server
+            yaml-language-server
 
             # Neovim plugins managed by Nix instead of Lazy.nvim
             vimPlugins.blink-cmp
