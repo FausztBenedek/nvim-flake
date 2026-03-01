@@ -153,7 +153,8 @@ vim.opt.rtp:prepend(lazypath)
 local opts = {}
 local plugins = {
 	-- Theme
-	{ "https://github.com/Mofiqul/dracula.nvim" },
+	{ "https://github.com/projekt0n/github-nvim-theme" },
+	{ "https://github.com/nvim-lualine/lualine.nvim" },
 	-- Plugins that are just added (no setup function needed)
 	{ "https://github.com/itchyny/vim-qfedit" },
 	{ "https://github.com/tpope/vim-surround" },
@@ -212,9 +213,14 @@ local plugins = {
 require("lazy").setup(plugins, opts)
 
 ------ THEME ------
-vim.cmd("colorscheme dracula")
+require("github-theme").setup({})
+vim.cmd("colorscheme github_light_high_contrast")
+
 -- Set background transparent
-vim.api.nvim_set_hl(0, "Normal", { ctermbg = "NONE", bg = "NONE" })
+-- vim.api.nvim_set_hl(0, "Normal", { ctermbg = "NONE", bg = "NONE" })
+
+-- https://github.com/nvim-lualine/lualine.nvim
+require("lualine").setup({})
 
 -- https://github.com/chiedo/vim-case-convert
 vim.keymap.set("v", ",vc-", ":CamelToHyphen<CR>a", { noremap = false, silent = true, desc = "CamelToDash" })
