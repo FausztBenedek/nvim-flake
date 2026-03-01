@@ -1,7 +1,7 @@
 -- LSP keymaps
 
 vim.keymap.set("n", "gd", vim.lsp.buf.definition, { desc = "Show LSP definitions" }) -- show lsp definitions
-vim.keymap.set("n", "grc", vim.lsp.buf.incoming_calls, { desc = "Show LSP incoming_calls in quickfixlist" }) -- show lsp implementations
+vim.keymap.set("n", "gre", vim.lsp.buf.incoming_calls, { desc = "Show LSP incoming_calls in quickfixlist" }) -- show lsp implementations
 vim.keymap.set({ "n", "v" }, "<leader>dh", function()
 	vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
 end, { desc = "Toggle inlay hint" })
@@ -33,16 +33,16 @@ vim.lsp.enable("astro")
 vim.lsp.enable("ts_ls")
 vim.lsp.enable("nixd")
 vim.lsp.enable("terraformls")
-vim.lsp.config('yamlls', {
-  settings = {
-    yaml = {
-      schemas = {
-        ["https://json.schemastore.org/github-workflow.json"] = "/.github/workflows/*",
-      },
-    },
-  }
+vim.lsp.config("yamlls", {
+	settings = {
+		yaml = {
+			schemas = {
+				["https://json.schemastore.org/github-workflow.json"] = "/.github/workflows/*",
+			},
+		},
+	},
 })
-vim.lsp.enable('yamlls')
+vim.lsp.enable("yamlls")
 vim.lsp.config("lua_ls", {
 	on_init = function(client)
 		if client.workspace_folders then

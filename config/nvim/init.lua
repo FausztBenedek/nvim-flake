@@ -217,7 +217,7 @@ require("github-theme").setup({})
 vim.cmd("colorscheme github_light_high_contrast")
 
 -- Set background transparent
--- vim.api.nvim_set_hl(0, "Normal", { ctermbg = "NONE", bg = "NONE" })
+vim.api.nvim_set_hl(0, "Normal", { ctermbg = "NONE", bg = "NONE" })
 
 -- https://github.com/nvim-lualine/lualine.nvim
 require("lualine").setup({})
