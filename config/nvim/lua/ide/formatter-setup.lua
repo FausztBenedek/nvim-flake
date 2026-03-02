@@ -92,3 +92,10 @@ vim.api.nvim_set_keymap(
 	":<c-u>Format<CR>",
 	{ noremap = true, silent = true, desc = "Formats the buffer's content" }
 )
+
+vim.api.nvim_set_keymap(
+	"v",
+	"<leader>ll",
+	":'<,'>Format<CR>",
+	{ noremap = true, silent = true, desc = "Formats selected content" }
+)
