@@ -113,7 +113,7 @@
             '';
           });
           custom-nvim-dev-wrapper = (pkgs.symlinkJoin {
-            name = "Benedek-Neovim";
+            name = "Benedek-dev-Neovim";
             buildInputs = [ pkgs.makeWrapper ];
             paths = [ pkgs.neovim ];
             postBuild = ''
