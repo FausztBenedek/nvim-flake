@@ -89,6 +89,7 @@
             vscode-langservers-extracted # HTML/CSS/JSON/ESLint language servers extracted from vscode
             tailwindcss-language-server
             yaml-language-server
+            clang-tools # clangd language server
 
             # Neovim plugins managed by Nix instead of Lazy.nvim
             vimPlugins.blink-cmp
@@ -118,7 +119,7 @@
             paths = [ pkgs.neovim ];
             postBuild = ''
               wrapProgram $out/bin/nvim \
-                --set XDG_CONFIG_HOME "/Users/benedekfauszt/.config/nvim-flake/config" \
+                --set XDG_CONFIG_HOME "/home/benedekfauszt/.config/nvim-flake/config" \
                 --set BLINK_CMP_PATH "${pkgs.vimPlugins.blink-cmp}" \
                 --set TREESITTER_PARSERS "${tree-sitter-parsers}" \
                 --set JAVA_JDTLS "${pkgs.jdt-language-server}" \
