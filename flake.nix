@@ -118,7 +118,7 @@
             paths = [ pkgs.neovim ];
             postBuild = ''
               wrapProgram $out/bin/nvim \
-                --set XDG_CONFIG_HOME "/home/benedekfauszt/.config/nvim-flake/config" \
+                --set XDG_CONFIG_HOME "$HOME/.config/nvim-flake/config" \
                 --set BLINK_CMP_PATH "${pkgs.vimPlugins.blink-cmp}" \
                 --set TREESITTER_PARSERS "${tree-sitter-parsers}" \
                 --set JAVA_JDTLS "${pkgs.jdt-language-server}" \
