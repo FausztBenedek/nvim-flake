@@ -27,6 +27,7 @@ function M:setup()
 	local project_name = vim.fn.fnamemodify(vim.fn.getcwd(), ":p:h:t")
 	local sep = package.config:sub(1, 1)
 	local configuration = copy_jdtls_config_to_writable_location()
+	local lombok_path = vim.env.LOMBOK_JAR -- Set by nix
 
 	local workspace_dir = vim.fn.stdpath("data") .. sep .. "jdtls-workspace" .. sep .. project_name
 	local launcher = vim.fn.glob(vim.env.JAVA_JDTLS .. "/share/java/jdtls/plugins/org.eclipse.equinox.launcher_*.jar")
@@ -38,7 +39,8 @@ function M:setup()
 			-- 💀
 			"java", -- or '/path/to/java17_or_newer/bin/java'
 			-- depends on if `java` is in your $PATH env variable and if it points to the right version.
-
+			"-javaagent:" .. lombok_path,
+			"-Xbootclasspath/a:" .. lombok_path,
 			"-Declipse.application=org.eclipse.jdt.ls.core.id1",
 			"-Dosgi.bundles.defaultStartLevel=4",
 			"-Declipse.product=org.eclipse.jdt.ls.core.product",
