@@ -130,6 +130,22 @@ vim.keymap.set("n", "<leader>yp", function()
 	vim.notify("Copied: " .. escaped)
 end, { desc = "Copy current full path" })
 
+vim.keymap.set("n", "<leader>yj", function()
+	local ok, navic = pcall(require, "nvim-navic")
+
+	if not ok or not navic.is_available() then
+		vim.notify("No JSON path available", vim.log.levels.WARN)
+		return
+	end
+
+	local path = navic.get_location()
+
+	-- copy to system clipboard
+	vim.fn.setreg("+", path)
+
+	vim.notify("Copied JSON path: " .. path)
+end, { desc = "Copy JSON path to clipboard" })
+
 -- English keyboard similarity maps
 vim.api.nvim_set_keymap("n", "ú", "]", { noremap = false, silent = true }) -- must remain nvim_set_keymap, other does not work
 vim.api.nvim_set_keymap("n", "ő", "[", { noremap = false, silent = true })
@@ -177,6 +193,7 @@ local plugins = {
 	{ "https://github.com/justinmk/vim-sneak" },
 	{ "https://github.com/machakann/vim-highlightedyank" },
 	{ "https://github.com/j-morano/buffer_manager.nvim" },
+	{ "https://github.com/SmiteshP/nvim-navic" },
 
 	--formatter-setup
 	{ "https://github.com/mhartington/formatter.nvim" },
@@ -388,6 +405,51 @@ end, { noremap = true, silent = true, desc = "Save buffer list to file" })
 vim.keymap.set("n", "<leader>bl", function()
 	require("buffer_manager.ui").save_menu_to_file()
 end, { noremap = true, silent = true, desc = "Load buffer list from file" })
+
+-- https://github.com/SmiteshP/nvim-navic
+require("nvim-navic").setup({
+	icons = {
+		enabled = false,
+	},
+	lsp = {
+		auto_attach = false,
+		preference = nil,
+	},
+	separator = ".",
+	depth_limit_indicator = "..",
+	format_text = function(text)
+		print(text)
+		return text:gsub("%.(%d+)", "[%1]")
+	end,
+})
+function _G.navic_path()
+	local navic = require("nvim-navic")
+
+	if not navic.is_available() then
+		return ""
+	end
+
+	local path = navic.get_location()
+	path = path:gsub("%.(%d+)", "[%1]")
+
+	return path
+end
+vim.api.nvim_create_autocmd({ "BufWinEnter", "WinEnter" }, {
+	callback = function(args)
+		local bufnr = args.buf
+		if vim.bo[bufnr].filetype == "json" then
+			vim.api.nvim_set_option_value("winbar", "%{%v:lua.navic_path()%}", {
+				scope = "local",
+				win = 0,
+			})
+		else
+			vim.api.nvim_set_option_value("winbar", "", {
+				scope = "local",
+				win = 0,
+			})
+		end
+	end,
+})
 
 require("hacky.incremental-selection")
 require("hacky.change-cwd")

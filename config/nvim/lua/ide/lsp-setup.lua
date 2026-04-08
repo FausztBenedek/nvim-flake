@@ -32,7 +32,7 @@ vim.lsp.enable("bashls")
 vim.lsp.enable("astro")
 vim.lsp.enable("ts_ls")
 vim.lsp.enable("nixd")
-vim.lsp.enable('clangd')
+vim.lsp.enable("clangd")
 vim.lsp.enable("terraformls")
 vim.lsp.config("yamlls", {
 	settings = {
@@ -44,6 +44,12 @@ vim.lsp.config("yamlls", {
 	},
 })
 vim.lsp.enable("yamlls")
+vim.lsp.config("jsonls", {
+	on_attach = function(client, bufnr)
+		require("nvim-navic").attach(client, bufnr)
+	end,
+})
+vim.lsp.enable("jsonls")
 vim.lsp.config("lua_ls", {
 	on_init = function(client)
 		if client.workspace_folders then
