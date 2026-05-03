@@ -78,7 +78,6 @@
 
             #Language servers
             basedpyright # python
-            jdt-language-server # For java, the eclipse language server
             lua-language-server
             nixd
             bash-language-server
@@ -109,6 +108,8 @@
                 --set TREESITTER_PARSERS "${tree-sitter-parsers}" \
                 --set JAVA_JDTLS "${pkgs.jdt-language-server}" \
                 --set LOMBOK_JAR "${pkgs.lombok}/share/java/lombok.jar" \
+                --set JAVA_DEBUG_DIR "${pkgs.vscode-extensions.vscjava.vscode-java-debug}/share/vscode/extensions/vscjava.vscode-java-debug" \
+                --set JAVA_TEST_DIR "${pkgs.vscode-extensions.vscjava.vscode-java-test}/share/vscode/extensions/vscjava.vscode-java-test" \
                 --prefix PATH : "${pkgs.lib.makeBinPath dependencies}"
             '';
           });
@@ -123,6 +124,8 @@
                 --set TREESITTER_PARSERS "${tree-sitter-parsers}" \
                 --set JAVA_JDTLS "${pkgs.jdt-language-server}" \
                 --set LOMBOK_JAR "${pkgs.lombok}/share/java/lombok.jar" \
+                --set JAVA_DEBUG_DIR "${pkgs.vscode-extensions.vscjava.vscode-java-debug}/share/vscode/extensions/vscjava.vscode-java-debug" \
+                --set JAVA_TEST_DIR "${pkgs.vscode-extensions.vscjava.vscode-java-test}/share/vscode/extensions/vscjava.vscode-java-test" \
                 --prefix PATH : "${pkgs.lib.makeBinPath dependencies}"
             '';
           });

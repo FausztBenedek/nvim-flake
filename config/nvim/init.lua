@@ -235,6 +235,10 @@ local plugins = {
 	-- java setup
 	{ "mfussenegger/nvim-jdtls" },
 
+	-- dap setup
+	{ "https://github.com/mfussenegger/nvim-dap" },
+	{ "https://github.com/rcarriga/nvim-dap-ui" },
+
 	-- Other dependencies that are installed elsewhere
 	-- { "https://github.com/nvim-treesitter/nvim-treesitter" },
 }
@@ -477,3 +481,4 @@ require("ide.lsp-setup")
 require("ide.formatter-setup")
 require("ide.runner-setup")
 require("ide.test-setup") -- Depends on runner-setup (neotest uses overseer)
+require("ide.dap-setup")
