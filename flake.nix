@@ -67,12 +67,12 @@
             # Formatters
             libxml2 # xmllint
             nixpkgs-fmt
-            nodePackages.fixjson
+            fixjson
             ruff
             shfmt
             stylua
             taplo # TOML formatter
-            nodePackages.prettier
+            prettier
             google-java-format
             mdformat
 
@@ -81,8 +81,8 @@
             jdt-language-server # For java, the eclipse language server
             lua-language-server
             nixd
-            nodePackages.bash-language-server
-            nodePackages.typescript-language-server
+            bash-language-server
+            typescript-language-server
             terraform-ls
             astro-language-server
             vscode-langservers-extracted # HTML/CSS/JSON/ESLint language servers extracted from vscode
@@ -118,7 +118,7 @@
             paths = [ pkgs.neovim ];
             postBuild = ''
               wrapProgram $out/bin/nvim \
-                --set XDG_CONFIG_HOME "$HOME/.config/nvim-flake/config" \
+                --set XDG_CONFIG_HOME "/Users/benedekfauszt/.config/nvim-flake/config" \
                 --set BLINK_CMP_PATH "${pkgs.vimPlugins.blink-cmp}" \
                 --set TREESITTER_PARSERS "${tree-sitter-parsers}" \
                 --set JAVA_JDTLS "${pkgs.jdt-language-server}" \
