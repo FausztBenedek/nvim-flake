@@ -26,6 +26,18 @@ vim.opt.wrap = false
 vim.opt.ignorecase = true -- ignore case when searching
 vim.opt.smartcase = true -- if you include mixed case in your search, assumes you want case-sensitive
 
+vim.opt.diffopt = {
+	"internal",
+	"vertical",
+	"algorithm:histogram",
+	"hiddenoff",
+	"iwhite",
+	"filler",
+	"closeoff",
+	"indent-heuristic",
+	"inline:word",
+	"linematch:60",
+}
 vim.opt.splitright = true -- split vertical window to the right
 vim.opt.splitbelow = true -- split horizontal window to the bottom
 
@@ -232,6 +244,13 @@ require("lazy").setup(plugins, opts)
 ------ THEME ------
 require("github-theme").setup({})
 vim.cmd("colorscheme github_light_high_contrast")
+
+-- Diff highlights: keep syntax fg, only tint the background
+vim.api.nvim_set_hl(0, "DiffAdd", { bg = "#d4f5d4" })
+vim.api.nvim_set_hl(0, "DiffDelete", { bg = "#ffd4d4" })
+vim.api.nvim_set_hl(0, "DiffChange", { bg = "#fff0c4" })
+vim.api.nvim_set_hl(0, "DiffText", { bg = "#ffd166", bold = true })
+vim.api.nvim_set_hl(0, "DiffTextAdd", { bg = "#d4f5d4", bold = true })
 
 -- Set background transparent
 vim.api.nvim_set_hl(0, "Normal", { ctermbg = "NONE", bg = "NONE" })
