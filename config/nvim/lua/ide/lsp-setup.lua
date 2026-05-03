@@ -43,6 +43,11 @@ vim.lsp.config("yamlls", {
 		},
 	},
 })
+vim.lsp.config("yamlls", {
+	on_attach = function(client, bufnr)
+		require("nvim-navic").attach(client, bufnr)
+	end,
+})
 vim.lsp.enable("yamlls")
 vim.lsp.config("jsonls", {
 	on_attach = function(client, bufnr)

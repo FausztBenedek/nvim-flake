@@ -437,7 +437,7 @@ end
 vim.api.nvim_create_autocmd({ "BufWinEnter", "WinEnter" }, {
 	callback = function(args)
 		local bufnr = args.buf
-		if vim.bo[bufnr].filetype == "json" then
+		if vim.bo[bufnr].filetype == "json" or vim.bo[bufnr].filetype == "yaml" then
 			vim.api.nvim_set_option_value("winbar", "%{%v:lua.navic_path()%}", {
 				scope = "local",
 				win = 0,
