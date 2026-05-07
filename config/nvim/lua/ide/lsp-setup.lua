@@ -1,4 +1,6 @@
 -- LSP keymaps
+-- To list all posible LSP configurations
+-- :h lspconfig-all
 
 vim.keymap.set("n", "gd", vim.lsp.buf.definition, { desc = "Show LSP definitions" }) -- show lsp definitions
 vim.keymap.set("n", "gre", vim.lsp.buf.incoming_calls, { desc = "Show LSP incoming_calls in quickfixlist" }) -- show lsp implementations
@@ -46,12 +48,14 @@ vim.lsp.config("yamlls", {
 vim.lsp.config("yamlls", {
 	on_attach = function(client, bufnr)
 		require("nvim-navic").attach(client, bufnr)
+		require("ide.openapi-utils").attach_openapi_maps(bufnr)
 	end,
 })
 vim.lsp.enable("yamlls")
 vim.lsp.config("jsonls", {
 	on_attach = function(client, bufnr)
 		require("nvim-navic").attach(client, bufnr)
+		require("ide.openapi-utils").attach_openapi_maps(bufnr)
 	end,
 })
 vim.lsp.enable("jsonls")
