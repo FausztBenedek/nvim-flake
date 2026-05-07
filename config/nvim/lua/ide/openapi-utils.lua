@@ -40,7 +40,7 @@ local function openapi_references()
 			local match_indent = #(file_lines[lnum]:match("^(%s*)") or "")
 			local last_indent = match_indent
 
-      -- Lua for loop: for i = start, stop, step do
+			-- Lua for loop: for i = start, stop, step do
 			for i = lnum - 1, 1, -1 do
 				local l = file_lines[i]
 				local indent = #(l:match("^(%s*)") or "")
@@ -81,38 +81,42 @@ local function openapi_references()
 end
 
 local function openapi_jump_to_definition()
-	-- Get the word/path under cursor (grab the full line and extract the ref)
 	local line = vim.api.nvim_get_current_line()
-	local col = vim.api.nvim_win_get_cursor(0)[2] + 1
-
-	-- Find the $ref pattern around cursor position
-	local ref = line:match("#/components/schemas/([%w_]+)", 1)
-	if not ref then
-		-- Try matching from cursor vicinity more loosely
-		ref = line:match("['\"]?#/components/schemas/([%w_]+)['\"]?")
-	end
+	local ref = line:match("#/components/schemas/([%w_]+)")
 
 	if not ref then
 		vim.notify("No OpenAPI $ref found on this line", vim.log.levels.WARN)
 		return
 	end
 
-	vim.notify("Jumping to: " .. ref, vim.log.levels.INFO)
-
-	-- Search the buffer for the definition
-	-- In YAML: "BiproPayload:" at the top level under components.schemas
-	-- In JSON: "BiproPayload":
 	local buf = vim.api.nvim_get_current_buf()
 	local lines = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
 
-	for i, l in ipairs(lines) do
-		-- Match YAML key like `    BiproPayload:` or JSON `"BiproPayload":`
-		if l:match("^%s+" .. vim.pesc(ref) .. "%s*:") or l:match('"' .. vim.pesc(ref) .. '"%s*:') then
-			-- Save current position to jumplist before jumping
-			vim.cmd("normal! m'")
+	-- Step 1: Find the indentation level of the `schemas:` key
+	local schemas_indent = nil
+	for _, l in ipairs(lines) do
+		local indent = #(l:match("^(%s*)") or "")
+		local key = l:match('^%s*"?schemas"?%s*:')
+		if key then
+			schemas_indent = indent
+			break
+		end
+	end
 
+	if not schemas_indent then
+		vim.notify("Could not find schemas section", vim.log.levels.WARN)
+		return
+	end
+
+	-- Step 2: Find the schema name at exactly schemas_indent + 1 level deep
+	local target_indent = schemas_indent + 2 -- YAML typically adds 2 spaces per level
+	for i, l in ipairs(lines) do
+		local indent = #(l:match("^(%s*)") or "")
+		local key = l:match('^%s*"?([%w_]+)"?%s*:')
+		if key == ref and indent > schemas_indent and indent <= target_indent then
+			vim.cmd("normal! m'")
 			vim.api.nvim_win_set_cursor(0, { i, 0 })
-			vim.cmd("normal! zz^") -- center screen
+			vim.cmd("normal! zz^")
 			return
 		end
 	end
