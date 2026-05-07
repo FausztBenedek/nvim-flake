@@ -21,6 +21,12 @@
 
       perSystem = { pkgs, ... }:
         let
+          nix-managed-plugins = pkgs.symlinkJoin {
+            name = "nix-managed-neovim-plugins";
+            paths = [
+              pkgs.vimPlugins.nvim-treesitter
+            ];
+          };
           tree-sitter-parsers = pkgs.symlinkJoin {
             name = "ts-parsers";
             paths = [
@@ -107,6 +113,7 @@
                 --set XDG_CONFIG_HOME "${./config}" \
                 --set BLINK_CMP_PATH "${pkgs.vimPlugins.blink-cmp}" \
                 --set TREESITTER_PARSERS "${tree-sitter-parsers}" \
+                --set NIX_MANAGED_NEOVIM_PLUGINS "${nix-managed-plugins}" \
                 --set JAVA_JDTLS "${pkgs.jdt-language-server}" \
                 --set LOMBOK_JAR "${pkgs.lombok}/share/java/lombok.jar" \
                 --prefix PATH : "${pkgs.lib.makeBinPath dependencies}"
@@ -118,9 +125,10 @@
             paths = [ pkgs.neovim ];
             postBuild = ''
               wrapProgram $out/bin/nvim \
-                --set XDG_CONFIG_HOME "/Users/benedekfauszt/.config/nvim-flake/config" \
+                --set XDG_CONFIG_HOME "/home/benedekfauszt/.config/nvim-flake/config" \
                 --set BLINK_CMP_PATH "${pkgs.vimPlugins.blink-cmp}" \
                 --set TREESITTER_PARSERS "${tree-sitter-parsers}" \
+                --set NIX_MANAGED_NEOVIM_PLUGINS "${nix-managed-plugins}" \
                 --set JAVA_JDTLS "${pkgs.jdt-language-server}" \
                 --set LOMBOK_JAR "${pkgs.lombok}/share/java/lombok.jar" \
                 --prefix PATH : "${pkgs.lib.makeBinPath dependencies}"

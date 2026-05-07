@@ -179,6 +179,10 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 local opts = {}
+-- Make nvim-treesitter Lua modules (loaded from nix) visible before lazy's cache loader runs
+package.path = vim.env.NIX_MANAGED_NEOVIM_PLUGINS .. "/lua/?.lua;"
+	.. vim.env.NIX_MANAGED_NEOVIM_PLUGINS .. "/lua/?/init.lua;"
+	.. package.path
 local plugins = {
 	-- Theme
 	{ "https://github.com/projekt0n/github-nvim-theme" },
@@ -199,7 +203,6 @@ local plugins = {
 	{ "https://github.com/chiedo/vim-case-convert" },
 	{ "https://github.com/lukas-reineke/indent-blankline.nvim" },
 	{ "https://github.com/nvim-mini/mini.pick" },
-	{ "https://github.com/nvim-treesitter/nvim-treesitter", branch = "main" },
 	{ "https://github.com/stevearc/oil.nvim" },
 	{ "https://github.com/windwp/nvim-autopairs" },
 	{ "https://github.com/justinmk/vim-sneak" },
@@ -347,7 +350,9 @@ local treesitter_languages = {
 	"nix",
 }
 
-vim.opt.runtimepath:prepend(vim.env.TREESITTER_PARSERS)
+-- The new nvim-treesitter main branch puts shared query files (html_tags, ecma, jsx, dtd)
+-- under runtime/queries/ instead of queries/. Add that subdir so inherited queries are found.
+vim.opt.runtimepath:prepend(vim.env.TREESITTER_PARSERS .. "/runtime")
 vim.g.ts_install = false
 require("nvim-treesitter").setup({
 	-- Directory to install parsers and queries to
