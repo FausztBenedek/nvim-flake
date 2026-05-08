@@ -27,6 +27,8 @@ end, {
 	silent = true,
 })
 
+local openapi_schema = "https://spec.openapis.org/oas/3.0/schema/2024-10-18"
+
 -- Lsp configs
 
 vim.lsp.enable("basedpyright")
@@ -50,6 +52,18 @@ vim.lsp.config("yamlls", {
 		require("nvim-navic").attach(client, bufnr)
 		require("ide.openapi-utils").attach_openapi_maps(bufnr)
 	end,
+	settings = {
+		yaml = {
+			schemas = {
+				[openapi_schema] = {
+					"*.openapi.yaml",
+					"openapi.yaml",
+					"*openapi*",
+				},
+			},
+			validate = true,
+		},
+	},
 })
 vim.lsp.enable("yamlls")
 vim.lsp.config("jsonls", {
@@ -57,6 +71,17 @@ vim.lsp.config("jsonls", {
 		require("nvim-navic").attach(client, bufnr)
 		require("ide.openapi-utils").attach_openapi_maps(bufnr)
 	end,
+	settings = {
+		json = {
+			schemas = {
+				{
+					fileMatch = { "*.openapi.json", "openapi.json", "*openapi*" },
+					url = openapi_schema,
+				},
+			},
+			validate = { enable = true },
+		},
+	},
 })
 vim.lsp.enable("jsonls")
 vim.lsp.config("lua_ls", {
