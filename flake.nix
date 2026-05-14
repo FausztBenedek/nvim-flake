@@ -87,6 +87,7 @@
             jdt-language-server # For java, the eclipse language server
             lua-language-server
             nixd
+            nil
             bash-language-server
             typescript-language-server
             terraform-ls

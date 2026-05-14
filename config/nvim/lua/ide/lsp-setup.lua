@@ -36,6 +36,7 @@ vim.lsp.enable("bashls")
 vim.lsp.enable("astro")
 vim.lsp.enable("ts_ls")
 vim.lsp.enable("nixd")
+vim.lsp.enable("nil_ls")
 vim.lsp.enable("clangd")
 vim.lsp.enable("terraformls")
 vim.lsp.config("yamlls", {
