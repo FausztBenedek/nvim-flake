@@ -113,6 +113,36 @@ vim.keymap.set(
 	{ noremap = true, silent = true, desc = ":set filetype=markdown" }
 )
 
+local function transform_visual_selection(cmd)
+	local esc = vim.api.nvim_replace_termcodes("<Esc>", true, false, true)
+	vim.api.nvim_feedkeys(esc, "x", false)
+	local start_pos = vim.fn.getpos("'<")
+	local end_pos = vim.fn.getpos("'>")
+	local start_line, start_col = start_pos[2], start_pos[3]
+	local end_line, end_col = end_pos[2], end_pos[3]
+	local lines = vim.api.nvim_buf_get_text(0, start_line - 1, start_col - 1, end_line - 1, end_col, {})
+	local input = table.concat(lines, "\n")
+	local output = vim.fn.system(cmd, input)
+	local replacement = vim.split(output:gsub("\n$", ""), "\n")
+	vim.api.nvim_buf_set_text(0, start_line - 1, start_col - 1, end_line - 1, end_col, replacement)
+end
+
+vim.keymap.set("v", "<leader>ce", function()
+	transform_visual_selection({
+		"python3",
+		"-c",
+		"import sys, urllib.parse; print(urllib.parse.quote(sys.stdin.read().strip()))",
+	})
+end, { desc = "URL encode selection" })
+
+vim.keymap.set("v", "<leader>cd", function()
+	transform_visual_selection({
+		"python3",
+		"-c",
+		"import sys, urllib.parse; print(urllib.parse.unquote(sys.stdin.read().strip()))",
+	})
+end, { desc = "URL decode selection" })
+
 vim.keymap.set("n", "<leader>yp", function()
 	local raw
 
@@ -180,8 +210,10 @@ vim.opt.rtp:prepend(lazypath)
 
 local opts = {}
 -- Make nvim-treesitter Lua modules (loaded from nix) visible before lazy's cache loader runs
-package.path = vim.env.NIX_MANAGED_NEOVIM_PLUGINS .. "/lua/?.lua;"
-	.. vim.env.NIX_MANAGED_NEOVIM_PLUGINS .. "/lua/?/init.lua;"
+package.path = vim.env.NIX_MANAGED_NEOVIM_PLUGINS
+	.. "/lua/?.lua;"
+	.. vim.env.NIX_MANAGED_NEOVIM_PLUGINS
+	.. "/lua/?/init.lua;"
 	.. package.path
 local plugins = {
 	-- Theme
