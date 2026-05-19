@@ -1,52 +1,72 @@
+_G.selected_node = {}
 
--- Incremental selection copied from here https://www.reddit.com/r/neovim/comments/1kuj9xm/comment/mubni0l/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button
-_G.selected_nodes = {}
-
-local function get_node_at_cursor()
-  local node = vim.treesitter.get_node()
-  if not node then return nil end
-  return node
+local keymapToIncrement = "😅"
+local keymapToDecrement = "👍"
+local function select_last_selected_node()
+	if _G.selected_node[#_G.selected_node] == 0 then
+		print("No selected node")
+	end
+	local start_row, start_col, end_row, end_col = _G.selected_node[#_G.selected_node]:range()
+	-- print("parent: start_row " .. start_row .. "; start_col " .. start_col .. "; end_row " .. end_row .. "; end_col " .. end_col)
+	vim.api.nvim_win_set_cursor(0, { start_row + 1, start_col })
+	vim.api.nvim_buf_set_mark(0, "<", start_row + 1, start_col, {})
+	vim.api.nvim_buf_set_mark(0, ">", end_row + 1, end_col - 1, {})
+	vim.cmd("normal! gv")
 end
 
-local function select_node(node)
-  if not node then return end
-  local start_row, start_col, end_row, end_col = node:range()
-  vim.fn.setpos("'<", { 0, start_row + 1, start_col + 1, 0 })
-  vim.fn.setpos("'>", { 0, end_row + 1, end_col, 0 })
-  vim.cmd('normal! gv')
+---@param node TSNode | nil Node at the given position
+local function add_node(node)
+	if not node then
+		return
+	end
+	table.insert(_G.selected_node, node)
 end
 
-vim.keymap.set({ "n" }, "Ż", function()
-  _G.selected_nodes = {}
+vim.keymap.set("n", keymapToIncrement, function()
+	local node = vim.treesitter.get_node()
+	add_node(node)
+	select_last_selected_node()
+end)
 
-  local current_node = get_node_at_cursor()
-  if not current_node then return end
+vim.keymap.set("v", keymapToIncrement, function()
+	if _G.selected_node[#_G.selected_node] == 0 then
+		add_node(vim.treesitter.get_node())
+		select_last_selected_node()
+		return
+	end
 
-  table.insert(_G.selected_nodes, current_node)
-  select_node(current_node)
-end, { desc = "Select treesitter node" })
+	local parent = _G.selected_node[#_G.selected_node]:parent()
 
+	if not parent then
+		print("Root reached")
+		return
+	end
 
-vim.keymap.set("x", "Ż", function()
-  if #_G.selected_nodes == 0 then
-    return
-  end
+	add_node(parent)
+	select_last_selected_node()
+end)
 
-  local current_node = _G.selected_nodes[#_G.selected_nodes]
+vim.keymap.set("v", keymapToDecrement, function()
+	if _G.selected_node[#_G.selected_node] == 0 then
+		print("No selected node")
+		return
+	end
 
-  if not current_node then return end
+	table.remove(_G.selected_node)
 
-  local parent = current_node:parent()
-  if parent then
-    table.insert(_G.selected_nodes, parent)
-    select_node(parent)
-  end
-end, { desc = "Increment selection" })
+	if _G.selected_node[#_G.selected_node] == 0 then
+		print("No selected node")
+		vim.cmd("normal! \27") -- \27 is <Esc>
+		return
+	end
+	select_last_selected_node()
+end)
 
-vim.keymap.set("x", "∆", function()
-  table.remove(_G.selected_nodes)
-  local current_node = _G.selected_nodes[#_G.selected_nodes]
-  if current_node then
-    select_node(current_node)
-  end
-end, { desc = "Decrement selection" })
+local group = vim.api.nvim_create_augroup("TreesitterSelection", { clear = true })
+vim.api.nvim_create_autocmd("ModeChanged", {
+	group = group,
+	pattern = "[vV\x16]*:*", -- leaving any visual mode (v, V, or <C-v>)
+	callback = function()
+		_G.selected_node = {}
+	end,
+})
