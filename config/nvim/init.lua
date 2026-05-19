@@ -188,6 +188,52 @@ vim.keymap.set("n", "<leader>yj", function()
 	vim.notify("Copied JSON path: " .. path)
 end, { desc = "Copy JSON path to clipboard" })
 
+local function find_nix_importers()
+	local filename = vim.fn.expand("%:t")
+	if filename == "" then
+		vim.notify("No file in current buffer", vim.log.levels.WARN)
+		return
+	end
+
+	-- Escape the dot so rg treats it as a literal in the regex
+	local pattern = "import.*/" .. filename:gsub("%.", "\\.")
+
+	local output = vim.fn.systemlist({ "rg", "--vimgrep", "--type", "nix", pattern })
+
+	if #output == 0 then
+		vim.notify("No importers found for " .. filename, vim.log.levels.INFO)
+		return
+	end
+
+	-- Parse rg's vimgrep format:  path:line:col:text
+	local items = {}
+	for _, line in ipairs(output) do
+		local file, lnum, col, text = line:match("^(.-):(%d+):(%d+):(.*)$")
+		if file then
+			table.insert(items, {
+				filename = file,
+				lnum = tonumber(lnum),
+				col = tonumber(col),
+				text = text,
+			})
+		end
+	end
+
+	vim.fn.setqflist({}, "r", { title = "Importers of " .. filename, items = items })
+	vim.cmd("copen")
+end
+
+vim.api.nvim_create_autocmd("FileType", {
+	group = vim.api.nvim_create_augroup("NixTools", { clear = true }),
+	pattern = "nix",
+	callback = function()
+		vim.keymap.set("n", "gsf", find_nix_importers, {
+			buffer = true,
+			desc = "Find nix files that import this one",
+		})
+	end,
+})
+
 -- English keyboard similarity maps
 vim.api.nvim_set_keymap("n", "ú", "]", { noremap = false, silent = true }) -- must remain nvim_set_keymap, other does not work
 vim.api.nvim_set_keymap("n", "ő", "[", { noremap = false, silent = true })

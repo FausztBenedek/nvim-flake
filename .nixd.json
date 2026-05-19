@@ -1,0 +1,5 @@
+{
+  "nixpkgs": {
+    "expr": "import (builtins.getFlake \"/Users/benedekfauszt/.config/nvim-flake\").inputs.nixpkgs { }"
+  }
+}
