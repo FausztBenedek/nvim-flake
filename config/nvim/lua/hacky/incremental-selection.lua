@@ -35,12 +35,27 @@ local function add_node(node)
 		return
 	end
 
-	if #_G.selected_node > 0 and { _G.selected_node[#_G.selected_node]:range() } == { node:range() } then
-		print("skipping node " .. node:type() .. " range: " .. { node:range() })
+	if #_G.selected_node > 0 and vim.deep_equal({ _G.selected_node[#_G.selected_node]:range() }, { node:range() }) then
+		-- print(
+		-- 	"skipping node "
+		-- 		.. node:type()
+		-- 		.. " range: "
+		-- 		.. vim.inspect({ node:range() })
+		-- 		.. " because it has the same range as its child"
+		-- )
 		add_node(node:parent())
 		return
 	-- else
-	-- 	print("Add node " .. node:type()) -- To investigate the steps in the tree
+	-- 	print(
+	-- 		"Add node "
+	-- 			.. node:type()
+	-- 			.. " parent range: "
+	-- 			.. (#_G.selected_node == 0 and "none" or vim.inspect({ _G.selected_node[#_G.selected_node]:range() }))
+	-- 			.. " node range: "
+	-- 			.. vim.inspect({
+	-- 				node:range(),
+	-- 			})
+	-- 	) -- To investigate the steps in the tree
 	end
 	table.insert(_G.selected_node, node)
 end
