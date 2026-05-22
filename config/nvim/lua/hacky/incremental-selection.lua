@@ -4,17 +4,54 @@ _G.selected_node = {}
 local keymapToIncrement = "😅"
 local keymapToDecrement = "👍"
 
-
-local function get_node()
-  return vim.treesitter.get_node()
-
-end
 local function get_relevant_visual_selection()
+	local esc = vim.api.nvim_replace_termcodes("<Esc>", true, false, true)
+	vim.api.nvim_feedkeys(esc, "x", false) -- '< means previous, and not necessarily current selection, so exiting to normal mode sets the mark in '<
 	local start_pos = vim.fn.getpos("'<")
 	local end_pos = vim.fn.getpos("'>")
+	vim.cmd("normal! gv")
+
 	local start_line, start_col = start_pos[2], start_pos[3]
 	local end_line, end_col = end_pos[2], end_pos[3]
+	return start_line - 1, start_col - 1, end_line - 1, end_col -- subtracting to match treesitter indexes
+end
 
+local function get_node()
+	local node = vim.treesitter.get_node()
+	if node == nil then
+		print("Node is nil under cursor, aborting")
+		return
+	end
+  local mode = vim.api.nvim_get_mode().mode
+	if mode:match("v|V") ~= nil then
+		return node
+	end
+  vim.cmd("normal! v")
+
+	local max_iteration = 100
+
+	local v_start_row, v_start_col, v_end_row, v_end_col = get_relevant_visual_selection()
+	while max_iteration > 0 do
+		max_iteration = max_iteration - 1
+		local node_start_row, node_start_col, node_end_row, node_end_col = node:range()
+
+		if
+			node_start_row > v_start_row
+			or (node_start_row == v_start_row and node_start_col > v_start_col)
+			or node_end_row < v_end_row
+			or (node_end_row == v_end_row and node_end_col < v_end_col)
+		then
+			-- Visual selection must contain the node, if condition = true, this is not yet the case
+			node = node:parent()
+			if node == nil then
+				print("No parent left, aborting")
+				return
+			end
+		else
+			break
+		end
+	end
+	return node
 end
 
 local function select_last_selected_node()
@@ -84,7 +121,7 @@ local function next_sibling()
 		return
 	end
 	_G.selected_node = { sibling }
-  select_last_selected_node()
+	select_last_selected_node()
 end
 
 local function prev_sibling()
@@ -97,18 +134,18 @@ local function prev_sibling()
 		return
 	end
 	_G.selected_node = { sibling }
-  select_last_selected_node()
+	select_last_selected_node()
 end
 
 vim.keymap.set("n", keymapToIncrement, function()
-	local node = vim.treesitter.get_node()
+	local node = get_node()
 	add_node(node)
 	select_last_selected_node()
 end)
 
 vim.keymap.set("v", keymapToIncrement, function()
 	if #_G.selected_node == 0 then
-		add_node(vim.treesitter.get_node())
+		add_node(get_node())
 		select_last_selected_node()
 		return
 	end

@@ -115,7 +115,7 @@ vim.keymap.set(
 
 local function transform_visual_selection(cmd)
 	local esc = vim.api.nvim_replace_termcodes("<Esc>", true, false, true)
-	vim.api.nvim_feedkeys(esc, "x", false)
+	vim.api.nvim_feedkeys(esc, "x", false) -- '< means previous, and not necessarily current selection, so exiting to normal mode sets the mark in '<
 	local start_pos = vim.fn.getpos("'<")
 	local end_pos = vim.fn.getpos("'>")
 	local start_line, start_col = start_pos[2], start_pos[3]
