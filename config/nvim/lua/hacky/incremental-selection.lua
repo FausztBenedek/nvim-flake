@@ -1,8 +1,8 @@
 ---@type TSNode[]
 _G.selected_node = {}
 
-local keymapToIncrement = "😅"
-local keymapToDecrement = "👍"
+local keymapToIncrement = "§"
+local keymapToDecrement = "~"
 
 local function get_relevant_visual_selection()
 	local esc = vim.api.nvim_replace_termcodes("<Esc>", true, false, true)
