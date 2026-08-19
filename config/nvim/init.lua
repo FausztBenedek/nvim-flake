@@ -295,6 +295,7 @@ local plugins = {
 	-- git-setup
 	{ "https://github.com/tpope/vim-fugitive" },
 	{ "https://github.com/lewis6991/gitsigns.nvim" },
+	{ "https://github.com/sindrets/diffview.nvim" },
 
 	--lsp-setup
 	{ "https://github.com/neovim/nvim-lspconfig" },

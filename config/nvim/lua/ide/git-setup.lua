@@ -18,6 +18,48 @@ vim.keymap.set("n", "<leader>gd", function()
 	vim.cmd("Gvdiffsplit " .. commit_hash)
 end, { noremap = true, desc = "Compare file to its previous state in the commit in the clipboard", silent = true })
 
+-- https://github.com/sindrets/diffview.nvim
+require("diffview").setup({
+	enhanced_diff_hl = true,
+	view = {
+		merge_tool = {
+			layout = "diff3_mixed",
+		},
+	},
+})
+-- The file panel's file names link to `Normal`, which has no explicit fg here (the
+-- transparent background setup clears it), so they fall back to the terminal's
+-- foreground colour and become invisible on a light background.
+vim.api.nvim_set_hl(0, "DiffviewFilePanelFileName", { fg = "#000000" })
+vim.keymap.set(
+	"n",
+	"<leader>gv",
+	":<c-u>DiffviewOpen<cr>",
+	{ noremap = true, desc = "Diffview: working tree changes", silent = true }
+)
+vim.keymap.set("n", "<leader>gV", function()
+	local commit_hash = vim.fn.getreg('"')
+	vim.cmd("DiffviewOpen " .. commit_hash)
+end, { noremap = true, desc = "Diffview: diff against the commit in the clipboard", silent = true })
+vim.keymap.set(
+	"n",
+	"<leader>gf",
+	":<c-u>DiffviewFileHistory %<cr>",
+	{ noremap = true, desc = "Diffview: history of the file in buffer", silent = true }
+)
+vim.keymap.set(
+	"n",
+	"<leader>gF",
+	":<c-u>DiffviewFileHistory<cr>",
+	{ noremap = true, desc = "Diffview: history of the repository", silent = true }
+)
+vim.keymap.set(
+	"n",
+	"<leader>gq",
+	":<c-u>DiffviewClose<cr>",
+	{ noremap = true, desc = "Diffview: close", silent = true }
+)
+
 -- https://github.com/lewis6991/gitsigns.nvim
 require("gitsigns").setup({
 	on_attach = function(bufnr)
