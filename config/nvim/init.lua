@@ -128,7 +128,7 @@ local function transform_visual_selection(cmd)
 	vim.api.nvim_buf_set_text(0, start_line - 1, start_col - 1, end_line - 1, end_col, replacement)
 end
 
-vim.keymap.set("v", "<leader>ce", function()
+vim.keymap.set("v", "<leader>ue", function()
 	transform_visual_selection({
 		"python3",
 		"-c",
@@ -136,7 +136,7 @@ vim.keymap.set("v", "<leader>ce", function()
 	})
 end, { desc = "URL encode selection" })
 
-vim.keymap.set("v", "<leader>cd", function()
+vim.keymap.set("v", "<leader>ud", function()
 	transform_visual_selection({
 		"python3",
 		"-c",
@@ -314,6 +314,12 @@ local plugins = {
 	{ "https://github.com/nvim-neotest/neotest" },
 	{ "https://github.com/nvim-neotest/neotest-python" },
 	{ "https://github.com/rcasia/neotest-java" },
+
+	--dap-setup
+	{ "https://github.com/mfussenegger/nvim-dap" },
+	{ "https://github.com/mfussenegger/nvim-dap-python" },
+	{ "https://github.com/rcarriga/nvim-dap-ui" },
+	{ "https://github.com/theHamsta/nvim-dap-virtual-text" },
 
 	-- java setup
 	{ "mfussenegger/nvim-jdtls" },
@@ -561,4 +567,5 @@ require("ide.git-setup")
 require("ide.lsp-setup")
 require("ide.formatter-setup")
 require("ide.runner-setup")
-require("ide.test-setup") -- Depends on runner-setup (neotest uses overseer)
+require("ide.dap-setup")
+require("ide.test-setup") -- Depends on runner-setup (neotest uses overseer) and dap-setup (debug strategy)

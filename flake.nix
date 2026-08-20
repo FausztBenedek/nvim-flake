@@ -64,6 +64,11 @@
               pkgs.vimPlugins.nvim-treesitter-parsers.nix
             ];
           };
+          # The interpreter that runs `-m debugpy.adapter`. Deliberately NOT in `dependencies`:
+          # that list goes on PATH, where it would shadow the user's own python3 with one that
+          # has no project dependencies. Debugged code runs under the project's own venv.
+          # Pinned to 3.14 to match the venvs in use, so pydevd's compiled speedups load.
+          debugpy-python = pkgs.python314.withPackages (ps: [ ps.debugpy ]);
           dependencies = with pkgs; [
             fzf
             tree-sitter
@@ -117,6 +122,7 @@
                 --set NIX_MANAGED_NEOVIM_PLUGINS "${nix-managed-plugins}" \
                 --set JAVA_JDTLS "${pkgs.jdt-language-server}" \
                 --set LOMBOK_JAR "${pkgs.lombok}/share/java/lombok.jar" \
+                --set DEBUGPY_PYTHON "${debugpy-python}/bin/python" \
                 --prefix PATH : "${pkgs.lib.makeBinPath dependencies}"
             '';
           });
@@ -132,6 +138,7 @@
                 --set NIX_MANAGED_NEOVIM_PLUGINS "${nix-managed-plugins}" \
                 --set JAVA_JDTLS "${pkgs.jdt-language-server}" \
                 --set LOMBOK_JAR "${pkgs.lombok}/share/java/lombok.jar" \
+                --set DEBUGPY_PYTHON "${debugpy-python}/bin/python" \
                 --prefix PATH : "${pkgs.lib.makeBinPath dependencies}"
             '';
           });

@@ -4,10 +4,10 @@
 
 vim.keymap.set("n", "gd", vim.lsp.buf.definition, { desc = "Show LSP definitions" }) -- show lsp definitions
 vim.keymap.set("n", "gre", vim.lsp.buf.incoming_calls, { desc = "Show LSP incoming_calls in quickfixlist" }) -- show lsp implementations
-vim.keymap.set({ "n", "v" }, "<leader>dh", function()
+vim.keymap.set({ "n", "v" }, "<leader>ch", function()
 	vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
 end, { desc = "Toggle inlay hint" })
-vim.keymap.set("n", "<leader>dd", vim.diagnostic.open_float, { desc = "Show line diagnostics" }) -- show diagnostics for line
+vim.keymap.set("n", "<leader>cd", vim.diagnostic.open_float, { desc = "Show line diagnostics" }) -- show diagnostics for line
 vim.keymap.set("n", "[d", function()
 	vim.diagnostic.jump({ count = -1, float = true })
 end, { desc = "Go to previous diagnostic" }) -- jump to previous diagnostic in buffer
