@@ -105,6 +105,37 @@ else
 	)
 end
 
+-- Rust, C and C++ debug through lldb-dap. macOS keeps it inside the Xcode command line
+-- tools rather than on PATH, hence the `xcrun -f` fallback; elsewhere it comes from nixpkgs'
+-- lldb in the flake's `dependencies`. launch.json entries select it with `"type": "lldb-dap"`.
+local function lldb_dap_path()
+	if vim.fn.executable("lldb-dap") == 1 then
+		return vim.fn.exepath("lldb-dap")
+	end
+	-- Guarded: system() with a list errors out when the command does not exist at all.
+	if vim.fn.executable("xcrun") == 1 then
+		local path = vim.trim(vim.fn.system({ "xcrun", "-f", "lldb-dap" }))
+		if vim.v.shell_error == 0 and vim.fn.executable(path) == 1 then
+			return path
+		end
+	end
+	return nil
+end
+
+local lldb_dap = lldb_dap_path()
+if lldb_dap then
+	dap.adapters["lldb-dap"] = {
+		type = "executable",
+		command = lldb_dap,
+	}
+else
+	vim.notify(
+		"lldb-dap not found -- native (Rust/C/C++) debugging is unavailable",
+		vim.log.levels.WARN,
+		{ title = "DAP" }
+	)
+end
+
 -- Replace ${workspaceFolder} with the *project* root rather than the cwd. nvim-dap expands
 -- it to vim.fn.getcwd(), which is wrong whenever nvim was opened on a subdirectory -- e.g.
 -- opening a `tools/` package whose launch.json and git root both live above it. Mutates in

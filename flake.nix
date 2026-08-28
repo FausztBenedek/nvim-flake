@@ -109,6 +109,12 @@
             jdt-language-server
             lombok # For jdt-language-server's lombok support
 
+          ] ++ lib.optionals stdenv.hostPlatform.isLinux [
+            # lldb-dap, the debug adapter for compiled languages (Rust/C/C++). Linux only: on
+            # macOS it comes from the Xcode command line tools, found via `xcrun` in
+            # dap-setup.lua, because nixpkgs' lldb has no codesigned debugserver there and
+            # would shadow the working one on PATH.
+            lldb
           ];
           custom-nvim-wrapper = (pkgs.symlinkJoin {
             name = "Benedek-Neovim";
