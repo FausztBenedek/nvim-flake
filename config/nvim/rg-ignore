@@ -1,0 +1,13 @@
+# Extra ignore rules for ripgrep, passed via --ignore-file by the mini.pick
+# pickers in init.lua. Those run rg with --hidden, so this file takes over the
+# job of hiding dotfiles -- and can make exceptions. Gitignore syntax: later
+# rules win, a leading "!" re-includes.
+
+# Hidden files and directories stay hidden (this also covers .git) ...
+.*
+# ... except CI config, which is worth searching.
+!.github/
+
+# Build output, in case a project does not gitignore it.
+node_modules/
+target/
