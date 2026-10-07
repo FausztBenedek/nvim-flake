@@ -102,6 +102,9 @@
             yaml-language-server
             clang-tools # clangd language server
 
+            # Runtime for the Nix-built Markdown preview server
+            nodejs
+
             # Neovim plugins managed by Nix instead of Lazy.nvim
             vimPlugins.blink-cmp
 
@@ -123,6 +126,7 @@
             postBuild = ''
               wrapProgram $out/bin/nvim \
                 --set XDG_CONFIG_HOME "${./config}" \
+                --set MARKDOWN_PREVIEW_PATH "${pkgs.vimPlugins.markdown-preview-nvim}" \
                 --set BLINK_CMP_PATH "${pkgs.vimPlugins.blink-cmp}" \
                 --set TREESITTER_PARSERS "${tree-sitter-parsers}" \
                 --set NIX_MANAGED_NEOVIM_PLUGINS "${nix-managed-plugins}" \
@@ -139,6 +143,7 @@
             postBuild = ''
               wrapProgram $out/bin/nvim \
                 --set XDG_CONFIG_HOME "/Users/benedekfauszt/.config/nvim-flake/config" \
+                --set MARKDOWN_PREVIEW_PATH "${pkgs.vimPlugins.markdown-preview-nvim}" \
                 --set BLINK_CMP_PATH "${pkgs.vimPlugins.blink-cmp}" \
                 --set TREESITTER_PARSERS "${tree-sitter-parsers}" \
                 --set NIX_MANAGED_NEOVIM_PLUGINS "${nix-managed-plugins}" \

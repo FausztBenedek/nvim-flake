@@ -289,6 +289,22 @@ local plugins = {
 	{ "https://github.com/j-morano/buffer_manager.nvim" },
 	{ "https://github.com/SmiteshP/nvim-navic" },
 
+	-- Live Markdown preview in the browser (including Mermaid diagrams).
+	{
+		name = "markdown-preview.nvim",
+		dir = vim.env.MARKDOWN_PREVIEW_PATH,
+		ft = { "markdown" },
+		cmd = { "MarkdownPreview", "MarkdownPreviewStop", "MarkdownPreviewToggle" },
+		keys = {
+			{ "<leader>mp", "<cmd>MarkdownPreviewToggle<cr>", desc = "Toggle Markdown preview", ft = "markdown" },
+		},
+		init = function()
+			vim.g.mkdp_auto_start = 0
+			vim.g.mkdp_auto_close = 1
+			vim.g.mkdp_filetypes = { "markdown" }
+		end,
+	},
+
 	--formatter-setup
 	{ "https://github.com/mhartington/formatter.nvim" },
 

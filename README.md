@@ -10,6 +10,21 @@ The only requirement is nix to be installed
 
 - `--refresh` always checks wether new changes were pushed to the repo
 
+# Markdown preview
+
+In a Markdown buffer, press **Space → m → p** (`<leader>mp`) to toggle a live
+preview in your default browser. It updates as you edit and supports Mermaid
+fenced code blocks, for example:
+
+```mermaid
+flowchart LR
+  A[Edit Markdown] --> B[Live browser preview]
+```
+
+You can also use `:MarkdownPreview` and `:MarkdownPreviewStop`.
+The plugin and its Node.js runtime are supplied by Nix; restart via `nix run .`
+(or re-enter `nix develop .#dev`) after updating this configuration.
+
 # Debugging
 
 `<leader>d` is the debugger prefix (`db` breakpoint, `dc` continue, `di`/`do`/`dO` step,
