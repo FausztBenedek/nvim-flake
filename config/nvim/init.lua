@@ -329,7 +329,6 @@ local plugins = {
 	{ "https://github.com/nvim-neotest/nvim-nio" },
 	{ "https://github.com/nvim-neotest/neotest" },
 	{ "https://github.com/nvim-neotest/neotest-python" },
-	{ "https://github.com/rcasia/neotest-java" },
 
 	--dap-setup
 	{ "https://github.com/mfussenegger/nvim-dap" },

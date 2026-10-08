@@ -31,24 +31,11 @@ python.filter_dir = function(name)
 	return name ~= "venv" and name ~= ".venv" and name ~= ".git" and name ~= "__pycache__" and name ~= "node_modules"
 end
 
-local java = require("neotest-java")({
-	junit_jar = nil, -- default: stdpath("data") .. /nvim/neotest-java/junit-platform-console-standalone-[version].jar
-	incremental_build = true,
-})
-
--- neotest-java matches on the file *stem* only, so in a repo with no build file it claims
--- the git root and then treats anything named like a test as one -- Test.png,
--- BlockUeberschriftTest.model -- erroring out on each. It can only ever run .java tests.
-local java_is_test_file = java.is_test_file
-java.is_test_file = function(file_path)
-	return vim.endswith(file_path, ".java") and java_is_test_file(file_path)
-end
-
 require("neotest").setup({
 	consumers = {
 		overseer = require("neotest.consumers.overseer"),
 	},
-	adapters = { python, java },
+	adapters = { python },
 })
 
 vim.keymap.set("n", "<leader>tr", function()
