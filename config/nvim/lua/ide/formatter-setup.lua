@@ -18,7 +18,7 @@ require("formatter").setup({
 			function()
 				return {
 					exe = "mdformat",
-					args = { "--wrap 80", "-" },
+					args = { "--wrap 80", "--number", "-" },
 					stdin = true,
 				}
 			end,
