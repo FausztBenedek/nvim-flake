@@ -24,7 +24,13 @@ require("formatter").setup({
 			end,
 		},
 		xml = {
-			require("formatter.filetypes.xml").xmllint,
+			function()
+				return {
+					exe = "xmllint",
+					args = { "--format", "-" },
+					stdin = true,
+				}
+			end,
 		},
 		html = {
 			require("formatter.filetypes.html").prettier,

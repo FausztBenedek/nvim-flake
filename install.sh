@@ -15,4 +15,4 @@ git -C "${repo_root}" push
 printf 'Updating benedek-neovim-flake and switching Home Manager...\n'
 cd "${home_manager_dir}"
 nix flake update benedek-neovim-flake
-home-manager switch
+switch

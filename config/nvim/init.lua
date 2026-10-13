@@ -103,6 +103,12 @@ vim.keymap.set(
 )
 vim.keymap.set(
 	"n",
+	"<leader>sfx",
+	":<c-u>set filetype=xml<cr>:<c-u>set modifiable<cr>",
+	{ noremap = true, silent = true, desc = ":set filetype=xml" }
+)
+vim.keymap.set(
+	"n",
 	"<leader>sfl",
 	":<c-u>set filetype=log<cr>",
 	{ noremap = true, silent = true, desc = ":set filetype=log" }
