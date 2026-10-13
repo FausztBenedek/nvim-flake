@@ -1,4 +1,40 @@
 
+-- Copy repository-relative path and line range for sharing code references.
+local function code_reference(first_line, last_line)
+	local path = vim.api.nvim_buf_get_name(0)
+	if path == "" then
+		vim.notify("Cannot copy code reference: buffer has no file name", vim.log.levels.WARN)
+		return
+	end
+
+	path = vim.fn.fnamemodify(path, ":p")
+	local directory = vim.fn.fnamemodify(path, ":h")
+	local root = vim.fs.root(directory, ".git")
+	local base = root or vim.fn.getcwd()
+	local relative_path = vim.fs.relpath(base, path)
+	if not relative_path or relative_path == ".." or relative_path:sub(1, 3) == "../" then
+		relative_path = path
+	end
+	local reference = relative_path .. ":" .. first_line
+	if last_line ~= first_line then
+		reference = reference .. "-" .. last_line
+	end
+
+	vim.fn.setreg("+", reference)
+	vim.notify("Copied code reference: " .. reference)
+end
+
+vim.keymap.set("n", "<leader>yr", function()
+	local line = vim.api.nvim_win_get_cursor(0)[1]
+	code_reference(line, line)
+end, { desc = "Copy code reference" })
+
+vim.keymap.set("x", "<leader>yr", function()
+	local anchor_line = vim.fn.getpos("v")[2]
+	local cursor_line = vim.api.nvim_win_get_cursor(0)[1]
+	code_reference(math.min(anchor_line, cursor_line), math.max(anchor_line, cursor_line))
+end, { desc = "Copy code reference for selection" })
+
 -- https://github.com/tpope/vim-fugitive
 vim.keymap.set("n", "<leader>gb", ":<C-U>Git blame<CR>", { noremap = true, desc = "Open git blame", silent = true })
 vim.keymap.set(
