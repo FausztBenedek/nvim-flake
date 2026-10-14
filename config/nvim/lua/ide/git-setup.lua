@@ -1,4 +1,40 @@
 
+-- Find enclosing class/function names for code references.
+local symbol_node_types = {
+	class_declaration = true,
+	class_definition = true,
+	interface_declaration = true,
+	enum_declaration = true,
+	record_declaration = true,
+	function_declaration = true,
+	function_definition = true,
+	function_item = true,
+	method_declaration = true,
+	method_definition = true,
+	constructor_declaration = true,
+}
+
+local function enclosing_symbol(line)
+	local source = vim.api.nvim_buf_get_lines(0, line - 1, line, false)[1] or ""
+	local column = math.max(0, source:find("%S") and source:find("%S") - 1 or 0)
+	local ok, node = pcall(vim.treesitter.get_node, { bufnr = 0, pos = { line - 1, column } })
+	if not ok or not node then
+		return nil
+	end
+
+	local symbols = {}
+	while node do
+		if symbol_node_types[node:type()] then
+			local name_node = node:field("name")[1]
+			if name_node then
+				table.insert(symbols, 1, vim.treesitter.get_node_text(name_node, 0))
+			end
+		end
+		node = node:parent()
+	end
+	return #symbols > 0 and table.concat(symbols, ".") or nil
+end
+
 -- Copy repository-relative path and line range for sharing code references.
 local function code_reference(first_line, last_line)
 	local path = vim.api.nvim_buf_get_name(0)
@@ -19,7 +55,6 @@ local function code_reference(first_line, last_line)
 	if last_line ~= first_line then
 		reference = reference .. "-" .. last_line
 	end
-
 	vim.fn.setreg("+", reference)
 	vim.notify("Copied code reference: " .. reference)
 end
@@ -34,6 +69,34 @@ vim.keymap.set("x", "<leader>yr", function()
 	local cursor_line = vim.api.nvim_win_get_cursor(0)[1]
 	code_reference(math.min(anchor_line, cursor_line), math.max(anchor_line, cursor_line))
 end, { desc = "Copy code reference for selection" })
+
+local function copy_symbol_reference(line)
+	local path = vim.api.nvim_buf_get_name(0)
+	if path == "" then
+		vim.notify("Cannot copy symbol reference: buffer has no file name", vim.log.levels.WARN)
+		return
+	end
+	local symbol = enclosing_symbol(line)
+	if not symbol then
+		vim.notify("No enclosing class or function found", vim.log.levels.WARN)
+		return
+	end
+
+	local filename = vim.fn.fnamemodify(path, ":t")
+	local reference = symbol .. "(" .. filename .. ":" .. line .. ")"
+	vim.fn.setreg("+", reference)
+	vim.notify("Copied symbol reference: " .. reference)
+end
+
+vim.keymap.set("n", "<leader>ys", function()
+	copy_symbol_reference(vim.api.nvim_win_get_cursor(0)[1])
+end, { desc = "Copy symbol reference" })
+
+vim.keymap.set("x", "<leader>ys", function()
+	local anchor_line = vim.fn.getpos("v")[2]
+	local cursor_line = vim.api.nvim_win_get_cursor(0)[1]
+	copy_symbol_reference(math.min(anchor_line, cursor_line))
+end, { desc = "Copy symbol reference" })
 
 -- https://github.com/tpope/vim-fugitive
 vim.keymap.set("n", "<leader>gb", ":<C-U>Git blame<CR>", { noremap = true, desc = "Open git blame", silent = true })
