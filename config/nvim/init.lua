@@ -9,6 +9,7 @@
 --
 -- XDG_CONFIG_HOME=$(pwd)/config XDG_DATA_HOME=$(pwd)/data build/bin/nvim
 
+print("hello")
 ------ OPTIONS ------
 vim.g.mapleader = " "
 
@@ -283,6 +284,16 @@ local plugins = {
 	{ "https://github.com/nvim-mini/mini.icons" }, -- oil.nvim depends on this
 	{ "https://github.com/nvim-tree/nvim-web-devicons" }, -- oil.nvim depends on this
 	{ "https://github.com/norcalli/nvim-colorizer.lua" },
+	{
+		"https://github.com/carderne/pi-nvim",
+		config = function()
+			require("pi-nvim").setup({ set_default_keymaps = false })
+		end,
+		keys = {
+			{ "<leader>ps", "<cmd>PiSendSelection<cr><cr>", mode = "v", desc = "Send selection to Pi" },
+			{ "<leader>pb", "<cmd>PiSendBuffer<cr><cr>", mode = "n", desc = "Send buffer to Pi" },
+		},
+	},
 
 	-- Plugins needing configuration (at least a setup function)
 	{ "https://github.com/chiedo/vim-case-convert" },
