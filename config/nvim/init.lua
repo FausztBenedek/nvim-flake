@@ -9,7 +9,6 @@
 --
 -- XDG_CONFIG_HOME=$(pwd)/config XDG_DATA_HOME=$(pwd)/data build/bin/nvim
 
-print("hello")
 ------ OPTIONS ------
 vim.g.mapleader = " "
 
