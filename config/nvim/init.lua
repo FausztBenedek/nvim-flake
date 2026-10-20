@@ -150,7 +150,7 @@ vim.keymap.set("v", "<leader>ud", function()
 	})
 end, { desc = "URL decode selection" })
 
-vim.keymap.set("n", "<leader>yp", function()
+vim.keymap.set("n", "<leader>yP", function()
 	local raw
 
 	-- Prefer Oil dir when in an Oil buffer
@@ -178,6 +178,47 @@ vim.keymap.set("n", "<leader>yp", function()
 	vim.fn.setreg("+", escaped)
 	vim.notify("Copied: " .. escaped)
 end, { desc = "Copy current full path" })
+
+vim.keymap.set("n", "<leader>yp", function()
+	local filepath = vim.api.nvim_buf_get_name(0)
+	if filepath == "" then
+		vim.notify("No file available", vim.log.levels.WARN)
+		return
+	end
+
+	filepath = vim.fn.fnamemodify(filepath, ":p")
+	local base = vim.fn.getcwd()
+	local relative = vim.fs.relpath(base, filepath)
+
+	if not relative or relative == "../" or relative:match("^%.%./") then
+		local dir = vim.fs.dirname(filepath)
+		while dir do
+			if vim.fn.isdirectory(dir .. "/.git") == 1 then
+				base = dir
+				break
+			end
+			local parent = vim.fs.dirname(dir)
+			if parent == dir then
+				break
+			end
+			dir = parent
+		end
+		relative = vim.fs.relpath(base, filepath)
+	end
+
+	vim.fn.setreg("+", relative or filepath)
+	vim.notify("Copied: " .. (relative or filepath))
+end, { desc = "Copy file path relative to pwd or git root" })
+
+vim.keymap.set("n", "<leader>yf", function()
+	local filename = vim.fn.expand("%:t")
+	if filename == "" then
+		vim.notify("No file available", vim.log.levels.WARN)
+		return
+	end
+	vim.fn.setreg("+", filename)
+	vim.notify("Copied: " .. filename)
+end, { desc = "Copy file name" })
 
 vim.keymap.set("n", "<leader>yj", function()
 	local ok, navic = pcall(require, "nvim-navic")
