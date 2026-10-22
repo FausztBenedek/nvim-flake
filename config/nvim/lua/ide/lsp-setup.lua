@@ -39,6 +39,12 @@ vim.lsp.enable("nixd")
 vim.lsp.enable("nil_ls")
 vim.lsp.enable("clangd")
 vim.lsp.enable("terraformls")
+vim.lsp.config("kotlin_lsp", {
+	cmd = { "kotlin-lsp", "--stdio" },
+	filetypes = { "kotlin" },
+	root_markers = { "settings.gradle", "settings.gradle.kts", "build.gradle", "build.gradle.kts", ".git" },
+})
+vim.lsp.enable("kotlin_lsp")
 vim.lsp.config("yamlls", {
 	settings = {
 		yaml = {

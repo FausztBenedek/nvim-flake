@@ -64,6 +64,30 @@
               pkgs.vimPlugins.nvim-treesitter-parsers.nix
             ];
           };
+          kotlin-lsp = pkgs.stdenvNoCC.mkDerivation {
+            pname = "kotlin-lsp";
+            version = "263.7084.0";
+            src = pkgs.fetchurl {
+              url = "https://download.jetbrains.com/language-server/kotlin-server/263.7084.0/kotlin-server-263.7084.0${if pkgs.stdenv.hostPlatform.isAarch64 then "-aarch64" else ""}${if pkgs.stdenv.hostPlatform.isDarwin then ".sit" else ".tar.gz"}";
+              hash = if pkgs.stdenv.hostPlatform.isDarwin then
+                (if pkgs.stdenv.hostPlatform.isAarch64
+                  then "sha256-tAO/ilS9RY47pnMc+KuzNAvgi0OcA1dt/AKxP682lLg="
+                  else "sha256-srw5Ol5UFROdAtYueUtohDfjWmZ7WtFVopbXsAdWZLE=")
+              else if pkgs.stdenv.hostPlatform.isAarch64 then
+                "sha256-RQq3wdgOSBBqpCm0jLwi1oLKEquiQAR6rgI4Z5R4Dsg="
+              else "sha256-rgxLAeF6tzpKUid6jqqebcvi5JlgAxWyJ1mk5M3dEd8=";
+            };
+            nativeBuildInputs = [ pkgs.unzip pkgs.gnutar pkgs.gzip ];
+            dontUnpack = true;
+            installPhase = ''
+              runHook preInstall
+              ${if pkgs.stdenv.hostPlatform.isDarwin then "unzip -q \"$src\"" else "tar -xzf \"$src\""}
+              mkdir -p "$out/lib/kotlin-lsp" "$out/bin"
+              cp -R kotlin-server-263.7084.0/. "$out/lib/kotlin-lsp/"
+              ln -s "$out/lib/kotlin-lsp/bin/intellij-server" "$out/bin/kotlin-lsp"
+              runHook postInstall
+            '';
+          };
           # The interpreter that runs `-m debugpy.adapter`. Deliberately NOT in `dependencies`:
           # that list goes on PATH, where it would shadow the user's own python3 with one that
           # has no project dependencies. Debugged code runs under the project's own venv.
@@ -112,7 +136,7 @@
             jdt-language-server
             lombok # For jdt-language-server's lombok support
 
-          ] ++ lib.optionals stdenv.hostPlatform.isLinux [
+          ] ++ [ kotlin-lsp ] ++ lib.optionals stdenv.hostPlatform.isLinux [
             # lldb-dap, the debug adapter for compiled languages (Rust/C/C++). Linux only: on
             # macOS it comes from the Xcode command line tools, found via `xcrun` in
             # dap-setup.lua, because nixpkgs' lldb has no codesigned debugserver there and
