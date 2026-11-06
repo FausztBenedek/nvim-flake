@@ -506,6 +506,7 @@ local treesitter_languages = {
 	"python",
 	"rust",
 	"nix",
+	"typst",
 }
 
 -- The new nvim-treesitter main branch puts shared query files (html_tags, ecma, jsx, dtd)

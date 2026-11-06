@@ -64,6 +64,14 @@ require("formatter").setup({
 		java = {
 			require("formatter.filetypes.java").google_java_format,
 		},
+		typst = {
+			function()
+				return {
+					exe = "typstyle",
+					stdin = true,
+				}
+			end,
+		},
 		rust = {
 			require("formatter.filetypes.rust").rustfmt,
 		},

@@ -62,6 +62,7 @@
               pkgs.vimPlugins.nvim-treesitter-parsers.java
               pkgs.vimPlugins.nvim-treesitter-parsers.rust
               pkgs.vimPlugins.nvim-treesitter-parsers.nix
+              pkgs.vimPlugins.nvim-treesitter-parsers.typst
             ];
           };
           kotlin-lsp = pkgs.stdenvNoCC.mkDerivation {
@@ -110,6 +111,8 @@
             prettier
             google-java-format
             mdformat
+            typstyle # Typst formatter
+            typst # Typst compiler and CLI
 
             #Language servers
             basedpyright # python
@@ -125,6 +128,7 @@
             tailwindcss-language-server
             yaml-language-server
             clang-tools # clangd language server
+            tinymist # Typst language server
 
             # Runtime for the Nix-built Markdown preview server
             nodejs
